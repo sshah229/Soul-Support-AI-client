@@ -16,6 +16,7 @@ import Quiz from "./pages/Quiz/Quiz";
 import Awards from "./pages/Awards/Awards";
 import Home from "./pages/Home/Home";
 import GoalTrackerPage from "./pages/GoalTracker/GoalTrackerPage";
+import Journal from "./pages/Journal/Journal";
 
 // Auth check component - returns outlet or redirect based on auth state
 const RequireAuth = () => {
@@ -97,7 +98,11 @@ const router = createBrowserRouter([
       {
         path: "/goals",
         element: <GoalTrackerPage />,
-      }
+      },
+      {
+        path: "/journal",
+        element: <Journal />,
+      },
 
     ]
   },

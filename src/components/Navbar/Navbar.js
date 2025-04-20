@@ -61,6 +61,12 @@ const navigations = [
     name: "Rewards",
     Icon: ({ color }) => <FaAward size={25} color={color} />,
   },
+  {
+    id: 8,
+    path: "/journal",
+    name: "Journal",
+    Icon: ({ color }) => <FaAward size={25} color={color} />,
+  },
   // {
   //   id: 9,
   //   path: "/goals",

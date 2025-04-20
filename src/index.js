@@ -8,6 +8,7 @@ import Diet from "./pages/Diet/Diet";
 import Notifs from "./pages/Notifs/Notifs";
 import SearchDocs from "./pages/SearchDocs/SearchDocs";
 import Plans from "./pages/Plans/Plans";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import Chat from "./pages/Chat/Chat";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
@@ -88,6 +89,11 @@ const router = createBrowserRouter([
         path: "/rewards",
         element: <Awards />,
       },
+	{
+        path: "/Dashboard",
+        element: <Dashboard />,
+      },
+
     ]
   },
   

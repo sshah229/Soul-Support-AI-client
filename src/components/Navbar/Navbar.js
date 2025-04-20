@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
+import { FiActivity } from "react-icons/fi";
 import { SiPlanet } from "react-icons/si";
 import { BiSolidReport, BiLogOut } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
@@ -17,6 +18,12 @@ const navigations = [
     name: "Home",
     path: "/",
     Icon: ({ color }) => <FiHome size={25} color={color} />,
+  },
+  {
+    id: 9,
+    name: "Dashboard",
+    path: "/Dashboard",
+    Icon: ({ color }) => <FiActivity size={25} color={color} />,
   },
   {
     id: 2,

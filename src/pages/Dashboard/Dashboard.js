@@ -61,20 +61,13 @@ const Dashboard = () => {
     experienced: filtered.some((f) => f.emotion_category === e.category),
   }));
 
-  // Avg intensity per day
-  const byDate = filtered.reduce((acc, { emotion_intensity, timestamp }) => {
-    const day = timestamp.slice(0, 10);
-    acc[day] = acc[day] || { total: 0, count: 0 };
-    acc[day].total += emotion_intensity;
-    acc[day].count += 1;
-    return acc;
-  }, {});
-  const intensityData = Object.entries(byDate)
-    .map(([date, { total, count }]) => ({
-      date,
-      avgIntensity: total / count,
+  // Individual intensity points (one per log)
+  const intensityPoints = filtered
+    .map(({ emotion_intensity, timestamp }) => ({
+      timestamp,
+      intensity: emotion_intensity,
     }))
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
   // Frequency data
   const freq = filtered.reduce((acc, { emotion_category }) => {
@@ -135,17 +128,28 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Avg Intensity Chart */}
+        {/* Emotion Intensity Over Time */}
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-2">
-            Average Emotion Intensity (per Day)
+            Emotion Intensity Over Time
           </h2>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={intensityData}>
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="avgIntensity" stroke="#3182ce" />
+            <LineChart data={intensityPoints}>
+              <XAxis
+                dataKey="timestamp"
+                tickFormatter={(ts) => new Date(ts).toLocaleTimeString()}
+              />
+              <YAxis domain={["dataMin", "dataMax"]} />
+              <Tooltip
+                labelFormatter={(ts) => new Date(ts).toLocaleString()}
+                formatter={(value) => [`${value}`, "Intensity"]}
+              />
+              <Line
+                type="monotone"
+                dataKey="intensity"
+                stroke="#3182ce"
+                dot={{ r: 3 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

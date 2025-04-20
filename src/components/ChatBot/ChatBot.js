@@ -366,26 +366,60 @@ const ChatBot = () => {
   // useEffect(() => {
   //   getResponse();
   // }, []);
-  const getResponse = async (message) => {
-    await axios
-      .post("http://localhost:3000/chatbot", {
-        message:
-          "Answer this as a mental health companion, a friend and you will support me no matter what " +
-          message,
-      })
-      .then((res) => {
-        console.log(res.data.answer);
-        // setResponseFromAI(res.data.answer[0]);
-        setText(res.data.answer);
-        setChats([
-          ...chats,
-          { role: "User", msg: message },
-          { role: "Companion", msg: res.data.answer },
-        ]);
-        setInputText("");
-        setSpeak(true);
-      });
+
+  const goalMap = {
+    anxious: {
+      label: "Take a 2‑minute breathing break",
+      type: "breathing_exercise",
+      frequency: 120,
+    },
+    sad: {
+      label: "Write down 3 things you’re grateful for",
+      type: "gratitude_journal",
+      frequency: 1440, // once a day
+    },
+    angry: {
+      label: "Go for a 5‑minute walk to cool down",
+      type: "mindful_walk",
+      frequency: 180, // every 3 hours if still angry
+    },
   };
+
+  const user = JSON.parse(localStorage.getItem("data"));
+  const email = user?.email;
+
+  const getResponse = async (message) => {
+    try {
+      const { data } = await axios.post("http://localhost:3000/chatbot", {
+        message: "Answer this as a mental health companion, a friend and you will support me no matter what " +
+          message,
+        email,
+      });
+      const { answer, sentiment } = data;
+      setText(answer);
+      setChats(prev => [
+        ...prev,
+        { role: "User", msg: message },
+        { role: "Companion", msg: answer },
+      ]);
+      setInputText("");
+      setSpeak(true);
+
+      const key = sentiment?.toLowerCase();
+      const chosen = goalMap[key];
+      console.log("Auto‑add check:", { sentiment, key, chosen, email });
+      if (chosen && email) {
+        await axios.post("http://localhost:3000/goals/create", {
+          email,
+          ...chosen,
+        });
+        console.log(`Auto‑added goal for ${sentiment}:`, chosen.label);
+      }
+    } catch (err) {
+      console.error("getResponse error:", err);
+    }
+  };
+
 
   const stop = async () => {
     setUserMessage(transcript);
@@ -428,9 +462,8 @@ const ChatBot = () => {
           className="flex flex-col justify-between h-[90vh]"
         >
           <div
-            className={`max-w-[350px] ${
-              !chat && "invisible"
-            } flex flex-col mb-16 min-h-[450px]`}
+            className={`max-w-[350px] ${!chat && "invisible"
+              } flex flex-col mb-16 min-h-[450px]`}
           >
             <div
               className="bg-sky-50 max-w-[350px] flex flex-col p-4 min-h-[450px] max-h-[450px] overflow-y-auto"

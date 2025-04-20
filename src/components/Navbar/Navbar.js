@@ -62,6 +62,12 @@ const navigations = [
     Icon: ({ color }) => <FaAward size={25} color={color} />,
   },
   {
+    id: 9,
+    path: "/goals",
+    name: "Goal Tracker",
+    Icon: ({ color }) => <FaAward size={25} color={color} />,
+  },
+  {
     id: 7,
     name: "Emergency Call",
     Icon: ({ color }) => <BiSolidPhoneCall size={25} color={color} />,

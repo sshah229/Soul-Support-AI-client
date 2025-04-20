@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "audio-react-recorder": "^1.0.5",
     "axios": "^0.27.2",
+    "emailjs-com": "^3.2.0",
     "firebase": "^10.4.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "^2.15.0",

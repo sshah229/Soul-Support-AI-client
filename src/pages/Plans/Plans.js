@@ -83,6 +83,8 @@ import axios from "axios";
 //   },
 // ];
 const Plans = () => {
+  const user = JSON.parse(localStorage.getItem("data"));
+  const email = user?.email;
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const [done, setDone] = useState([
@@ -101,14 +103,13 @@ const Plans = () => {
     getPlans();
   }, []);
   const getPlans = async () => {
+    
     let email = await localStorage.getItem("data");
     console.log(email);
     email = JSON.parse(email);
     email = email.email;
     console.log(email);
-    const res = await axios.post("http://localhost:3000/plans", {
-      email: email,
-    });
+    const res = await axios.post("http://localhost:3000/plans", { email });
     console.log(res.data);
     setData(res.data);
   };

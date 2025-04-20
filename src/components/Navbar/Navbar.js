@@ -11,7 +11,7 @@ import { BiSolidPhoneCall } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import { FaAward } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../../assets/logo.png"
+import logo from "../../assets/logo.png";
 const navigations = [
   {
     id: 1,
@@ -61,12 +61,12 @@ const navigations = [
     name: "Rewards",
     Icon: ({ color }) => <FaAward size={25} color={color} />,
   },
-  {
-    id: 9,
-    path: "/goals",
-    name: "Goal Tracker",
-    Icon: ({ color }) => <FaAward size={25} color={color} />,
-  },
+  // {
+  //   id: 9,
+  //   path: "/goals",
+  //   name: "Goal Tracker",
+  //   Icon: ({ color }) => <FaAward size={25} color={color} />,
+  // },
   {
     id: 7,
     name: "Emergency Call",
@@ -80,43 +80,43 @@ const Navbar = () => {
     console.log(location.pathname);
   }, [location]);
   const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    navigate("/login")
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
   return (
     <div className="py-6 px-4 w-[20vw] h-screen shadow-lg">
       <ToastContainer />
       <div className="flex items-center">
-      <h1 className="text-2xl text-teal-500 font-bold">SoulSupport.ai</h1>
-      <img src={logo} className="w-12 h-12 ml-2" />
+        <h1 className="text-2xl text-teal-500 font-bold">SoulSupport.ai</h1>
+        <img src={logo} className="w-12 h-12 ml-2" />
       </div>
       <div className="mt-8">
         <div>
-        {navigations.map((nav) => (
-          <Link
-            onClick={() => {
-              if (nav.id === 7) {
-                toast("Hold Tight! Help Being Sent");
-              }
-            }}
-            to={nav.path}
-            key={nav.id}
-          >
-            <div
-              className={`flex flex-row items-center py-4 px-2 rounded-md ${
-                location.pathname === nav.path ? "bg-teal-100" : ""
-              } `}
+          {navigations.map((nav) => (
+            <Link
+              onClick={() => {
+                if (nav.id === 7) {
+                  toast("Hold Tight! Help Being Sent");
+                }
+              }}
+              to={nav.path}
+              key={nav.id}
             >
-              <nav.Icon
-                color={location.pathname === nav.path ? "#115E59" : "#5A5A5A"}
-              />
-              <h1
-                className={`text-lg ml-2  ${
-                  location.pathname === nav.path
-                    ? "text-teal-800 font-semibold"
-                    : "text-gray-700"
-                }`}
+              <div
+                className={`flex flex-row items-center py-4 px-2 rounded-md ${
+                  location.pathname === nav.path ? "bg-teal-100" : ""
+                } `}
+              >
+                <nav.Icon
+                  color={location.pathname === nav.path ? "#115E59" : "#5A5A5A"}
+                />
+                <h1
+                  className={`text-lg ml-2  ${
+                    location.pathname === nav.path
+                      ? "text-teal-800 font-semibold"
+                      : "text-gray-700"
+                  }`}
                 >
                   {nav.name}
                 </h1>
@@ -127,11 +127,7 @@ const Navbar = () => {
         <button onClick={() => logout()}>
           <div className="flex flex-row items-center py-4 px-2 rounded-md text-red-500">
             <BiLogOut size={25} className="text-red-500" />
-            <h1
-              className='text-lg ml-2 text-red-500'
-            >
-              Logout
-            </h1>
+            <h1 className="text-lg ml-2 text-red-500">Logout</h1>
           </div>
         </button>
       </div>

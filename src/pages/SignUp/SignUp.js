@@ -74,7 +74,7 @@ const SignUp = () => {
       <div className="flex flex-col px-36 py-6 flex-grow max-w-[50vw]">
         <div className="mt-32 max-w-[600px]">
           <h1 className="text-5xl leading-tight font-semibold mt-4 text-transparent bg-clip-text bg-gradient-to-r to-sky-600 from-sky-400">
-            SoulSupport.ai
+            Sakhi
           </h1>
           <h1 className="mt-4 text-2xl font-normal ">
             Empowering your journey to mental well-being with a stigma-free 3D

@@ -13,18 +13,32 @@ import logo from "../../assets/logo.png";
 // Custom Target Logo component for Goal Tracker
 const TargetLogo = ({ color = "#CC0000", size = 25 }) => {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 100 100" 
-      width={size} 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      width={size}
       height={size}
     >
       {/* Outer circle */}
-      <circle cx="50" cy="50" r="45" fill="none" stroke={color} strokeWidth="10" />
-      
+      <circle
+        cx="50"
+        cy="50"
+        r="45"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+      />
+
       {/* Middle circle */}
-      <circle cx="50" cy="50" r="25" fill="none" stroke={color} strokeWidth="10" />
-      
+      <circle
+        cx="50"
+        cy="50"
+        r="25"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+      />
+
       {/* Inner circle (bullseye) */}
       <circle cx="50" cy="50" r="10" fill={color} />
     </svg>
@@ -89,7 +103,7 @@ const navigations = [
   {
     id: 10,
     name: "Emergency Call",
-    path: "/emergency",  // Added a path for emergency
+    path: "/emergency", // Added a path for emergency
     Icon: ({ color }) => <BiSolidPhoneCall size={25} color={color} />,
   },
 ];
@@ -97,7 +111,7 @@ const navigations = [
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -115,16 +129,20 @@ const Navbar = () => {
     });
     // Additional emergency logic can go here
   };
-  
+
   return (
     <div className="py-6 px-4 w-[20vw] h-screen bg-white shadow-lg flex flex-col justify-between">
       <div>
         {/* Logo section */}
         <div className="flex items-center mb-8">
-          <img src={logo} className="w-12 h-12 mr-2" alt="SoulSupport.ai Logo" />
-          <h1 className="text-2xl text-teal-500 font-bold">SoulSupport.ai</h1>
+          <img
+            src={logo}
+            className="w-12 h-12 mr-2"
+            alt="SoulSupport.ai Logo"
+          />
+          <h1 className="text-2xl text-teal-500 font-bold">Sakhi</h1>
         </div>
-        
+
         {/* Navigation section */}
         <div className="overflow-y-auto">
           {navigations.map((nav) => (
@@ -160,16 +178,16 @@ const Navbar = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Logout section */}
-      <button 
+      <button
         onClick={logout}
         className="mt-auto flex flex-row items-center py-3 px-4 rounded-md text-red-500 hover:bg-red-50 transition-all duration-200"
       >
         <BiLogOut size={25} />
         <h1 className="text-lg ml-3 font-medium">Logout</h1>
       </button>
-      
+
       <ToastContainer />
     </div>
   );

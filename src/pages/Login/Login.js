@@ -98,7 +98,6 @@
 
 // export default Login;
 
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import wallpaper from "../../assets/login_wallp.png";
@@ -126,10 +125,10 @@ const Login = () => {
   const login = () => {
     // Reset error message
     setError("");
-    
+
     // Set logging state to show loading indicator
     setLogging(true);
-    
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -155,8 +154,8 @@ const Login = () => {
         console.log(error);
         // Set error message for user
         setError(
-          error.response?.data?.message || 
-          "Login failed. Please check your credentials."
+          error.response?.data?.message ||
+            "Login failed. Please check your credentials."
         );
       })
       .finally(() => {
@@ -177,7 +176,7 @@ const Login = () => {
       <div className="flex flex-col px-36 py-6 flex-grow max-w-[60vw]">
         <div className="mt-32 max-w-[600px]">
           <h1 className="text-5xl leading-tight font-semibold mt-4 text-transparent bg-clip-text bg-gradient-to-r to-sky-600 from-sky-400">
-            SoulSupport.ai
+            Sakhi
           </h1>
           <h1 className="mt-4 text-2xl font-normal ">
             Empowering your journey to mental well-being with a stigma-free 3D
@@ -193,14 +192,14 @@ const Login = () => {
             <p className="text-md font-medium">
               Enter your creds to heal yourself!
             </p>
-            
+
             {/* Display error message if any */}
             {error && (
               <div className="bg-red-900/30 text-red-300 p-3 rounded-md text-sm">
                 {error}
               </div>
             )}
-            
+
             <div className="bg-sky-900 shadow p-2 flex items-center rounded-md">
               <MdEmail className="text-sky-500 mr-2" size={18} />
               <input
@@ -229,7 +228,9 @@ const Login = () => {
               onClick={login}
               disabled={logging}
               className={`bg-gradient-to-bl from-sky-600 to-sky-300 ${
-                logging ? "opacity-70 cursor-not-allowed" : "bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"
+                logging
+                  ? "opacity-70 cursor-not-allowed"
+                  : "bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"
               } bg-[size:_200%] transition-all duration-500 text-[#02203c] p-3 rounded-md`}
             >
               {logging ? "Logging in..." : "Login"}

@@ -26,7 +26,13 @@ const FREQ_OPTIONS = [
   )
 ];
 
+// Notification sound: place notification.mp3 in public folder
+const notificationSound = new Audio('/notification.mp3');
+
 const BASE_URL = "http://localhost:3000/goals";
+// Hard-coded daily window
+const START_HOUR = 9;  // 9 AM
+const END_HOUR = 21;   // 9 PM
 
 const GoalTracker = ({ email }) => {
   const [newLabel, setNewLabel] = useState("");
@@ -36,6 +42,16 @@ const GoalTracker = ({ email }) => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const remindedRef = useRef(new Set());
+  const statsRef = useRef({}); // { [goalId]: { completed: number, missed: number }}
+
+  // Initialize stats for goals
+  const initStats = (fetchedGoals) => {
+    fetchedGoals.forEach(g => {
+      if (!statsRef.current[g._id]) {
+        statsRef.current[g._id] = { completed: 0, missed: 0 };
+      }
+    });
+  };
 
   // Fetch goals from backend
   const fetchGoals = async () => {
@@ -43,7 +59,9 @@ const GoalTracker = ({ email }) => {
     try {
       const res = await fetch(`${BASE_URL}/email/${email}`);
       const data = await res.json();
-      setGoals(Array.isArray(data) ? data : []);
+      const list = Array.isArray(data) ? data : [];
+      initStats(list);
+      setGoals(list);
     } catch (err) {
       console.error("fetchGoals error:", err);
       setGoals([]);
@@ -74,6 +92,7 @@ const GoalTracker = ({ email }) => {
     try {
       await fetch(`${BASE_URL}/${goalId}`, { method: 'DELETE' });
       remindedRef.current.delete(goalId);
+      delete statsRef.current[goalId];
       fetchGoals();
     } catch (err) {
       console.error('deleteGoal error:', err);
@@ -92,6 +111,8 @@ const GoalTracker = ({ email }) => {
     }
     // Mark complete on server
     await fetch(`${BASE_URL}/complete/${goal._id}`, { method: 'PATCH' });
+    // Update stats
+    statsRef.current[goal._id].completed += 1;
     // Refresh UI immediately
     fetchGoals();
     // Clear any past reminder flag
@@ -112,8 +133,12 @@ const GoalTracker = ({ email }) => {
         const lastTs = g.lastCompleted ? new Date(g.lastCompleted).getTime() : new Date(g.createdAt).getTime();
         const elapsed = (now - lastTs) / 1000 / 60;
         if (elapsed >= g.frequency && !remindedRef.current.has(g._id)) {
+          // play notification sound
+          notificationSound.play().catch(() => {});
           alert(`🔔 "${g.label}" is due! Please mark it done.`);
           remindedRef.current.add(g._id);
+          // Update missed count
+          statsRef.current[g._id].missed += 1;
         }
       });
     }, 60 * 1000);
@@ -182,17 +207,22 @@ const GoalTracker = ({ email }) => {
       ) : (
         <ul className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {goals.map((goal) => {
-            const now = Date.now();
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), START_HOUR).getTime();
+            const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), END_HOUR).getTime();
+            const totalSlots = Math.floor((todayEnd - todayStart) / (goal.frequency * 60 * 1000));
+            const stats = statsRef.current[goal._id] || { completed: 0, missed: 0 };
             const lastTs = goal.lastCompleted ? new Date(goal.lastCompleted).getTime() : null;
-            const elapsed = lastTs
-              ? (now - lastTs) / 1000 / 60
-              : Infinity;
+            const elapsed = lastTs ? (Date.now() - lastTs) / 1000 / 60 : Infinity;
             const completed = lastTs && elapsed < goal.frequency;
             return (
               <li key={goal._id} className="border border-gray-200 p-4 rounded-lg shadow hover:shadow-md transition">
                 <p className="text-lg font-semibold text-gray-800">{goal.label}</p>
                 <p className="text-sm text-gray-600 capitalize">Type: {goal.type.replace("_", " ")}</p>
                 <p className="text-sm text-gray-600">🔁 Frequency: <span className="font-medium">{formatFrequency(goal.frequency)}</span></p>
+                <p className="text-sm text-gray-600">📅 Slots (9AM–9PM): <span className="font-medium">{totalSlots}</span></p>
+                <p className="text-sm text-gray-600">✅ Completed: <span className="font-semibold">{stats.completed}</span></p>
+                <p className="text-sm text-gray-600">❌ Missed: <span className="font-semibold">{stats.missed}</span></p>
                 <p className="text-sm text-gray-600">✅ Today: <span className={completed ? 'text-green-600' : 'text-red-500'}>{completed ? 'Yes' : 'No'}</span></p>
                 <button
                   onClick={() => handleComplete(goal)}

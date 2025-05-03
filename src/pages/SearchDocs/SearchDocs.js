@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { blackBoxDiagnosis, recommendDoctors } from "./utils/recommendations";
+import { recommendDoctors } from "./utils/recommendations";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { gapi } from "gapi-script";

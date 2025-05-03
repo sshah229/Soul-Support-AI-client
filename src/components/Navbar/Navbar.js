@@ -49,12 +49,12 @@ const navigations = [
     name: "Diet Plan",
     Icon: ({ color }) => <MdOutlineFoodBank size={25} color={color} />,
   },
-  {
-    id: 6,
-    path: "/chat",
-    name: "Support Group",
-    Icon: ({ color }) => <BsFillChatLeftTextFill size={25} color={color} />,
-  },
+  // {
+  //   id: 6,
+  //   path: "/chat",
+  //   name: "Support Group",
+  //   Icon: ({ color }) => <BsFillChatLeftTextFill size={25} color={color} />,
+  // },
   {
     id: 8,
     path: "/rewards",

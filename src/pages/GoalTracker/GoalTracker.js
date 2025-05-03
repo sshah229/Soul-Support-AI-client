@@ -3,6 +3,16 @@
 import React, { useEffect, useState } from "react";
 import emailjs from "emailjs-com";
 
+const FREQ_OPTIONS = Array.from(
+  { length: (3 * 24 * 60) / 15 }, // 288 options for 3 days
+  (_, i) => {
+    const mins = (i + 1) * 15;
+    if (mins < 60) return { value: mins, label: `${mins} min` };
+    if (mins % 60 === 0) return { value: mins, label: `${mins / 60} hr` };
+    return { value: mins, label: `${Math.floor(mins / 60)}h ${mins % 60}m` };
+  }
+);
+
 const BASE_URL = "http://localhost:3000/goals";
 
 const GoalTracker = ({ email }) => {
@@ -81,17 +91,27 @@ const GoalTracker = ({ email }) => {
     }
   };
 
-  // inside GoalTracker.js, above component
-  const FREQ_OPTIONS = Array.from(
-    { length: (3 * 24 * 60) / 15 }, // 288 options for 3 days
-    (_, i) => {
-      const mins = (i + 1) * 15;
-      if (mins < 60) return { value: mins, label: `${mins} min` };
-      if (mins % 60 === 0) return { value: mins, label: `${mins / 60} hr` };
-      return { value: mins, label: `${Math.floor(mins / 60)}h ${mins % 60}m` };
+  const handleDelete = async (goalId) => {
+    try {
+      const res = await fetch(`${BASE_URL}/${goalId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        // refresh the list
+        fetchGoals();
+        // optional: notify via email
+        sendEmail({
+          to_email: email,
+          goal_status: 'deleted',
+          goal_label: goals.find((g) => g._id === goalId)?.label,
+        });
+      } else {
+        console.error('❌ deleteGoal failed:', await res.text());
+      }
+    } catch (err) {
+      console.error('❌ deleteGoal error:', err);
     }
-  );
-
+  };
 
   // Mark goal done for today
   const handleComplete = async (goal) => {
@@ -100,8 +120,7 @@ const GoalTracker = ({ email }) => {
     const diffMins = (now - last) / 1000 / 60;
     if (diffMins < goal.frequency) {
       return alert(
-        `Hold on! You can only mark “${goal.label}” again in ${
-          Math.ceil(goal.frequency - diffMins)
+        `Hold on! You can only mark “${goal.label}” again in ${Math.ceil(goal.frequency - diffMins)
         } minutes.`
       );
     }
@@ -114,7 +133,7 @@ const GoalTracker = ({ email }) => {
       goal_status: "completed",
     });
   };
-  
+
   useEffect(() => {
     fetchGoals();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +169,7 @@ const GoalTracker = ({ email }) => {
             className="mt-1 w-full border rounded p-2"
           >
             <option value="mood_checkin">Mood Check‑In</option>
-            <option value="hydration">Hydration</option>
+            <option value="hydration">Hydration</option>  
             <option value="journal_streak">Journaling</option>
           </select>
         </div>
@@ -207,6 +226,12 @@ const GoalTracker = ({ email }) => {
                 className="mt-3 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
               >
                 {goal.completedToday ? "✅ Done" : "Mark Done"}
+              </button>
+              <button
+                onClick={() => handleDelete(goal._id)}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 ml-2.5"
+              >
+                Delete
               </button>
             </li>
           ))}
